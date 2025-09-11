@@ -41,8 +41,8 @@ class MainActivity : AppCompatActivity() {
             if(colorCode.isNotEmpty()){
                 if (colorCode.length < 6){
                     Toast
-                        .makeText(this,
-                            getString(R.string.color_code_input_wrong_length), Toast.LENGTH_LONG)
+                        .makeText(this, getString(R.string.color_code_input_wrong_length),
+                            Toast.LENGTH_LONG)
                         .show()
                 }
                 else{
