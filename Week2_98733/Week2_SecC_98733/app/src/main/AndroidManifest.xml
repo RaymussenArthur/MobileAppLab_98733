@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Week2_SecC_98733">
         <activity
+            android:name=".SingleTopActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StandardActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -19,6 +25,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".StandardActivity"
+            android:launchMode="standard">
+        </activity>
+        <activity
+            android:name=".SingleTopActivity"
+            android:launchMode="singleTop">
         </activity>
     </application>
 
