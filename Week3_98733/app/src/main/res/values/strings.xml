@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Lab Week 03</string>
+    <string name="coffee_list">Coffee List</string>
+    <string name="affogato_title">Affogato</string>
+    <string name="affogato_desc">Espresso dituangkan di atas es krim vanila, disajikan dalam cangkir cappuccino.</string>
+    <string name="americano_title">Americano</string>
+    <string name="americano_desc">Espresso yang diencerkan dengan air panas.</string>
+    <string name="latte_title">Caffe Latte</string>
+    <string name="latte_desc">Espresso dengan susu panas dan sedikit busa di atasnya.</string>
+    <string name="cappuccino_title">Cappuccino</string>
+    <string name="cappuccino_desc">Cappuccino adalah espresso dengan susu panas dan busa susu tebal di atasnya.</string>
+
+    <string name="mocha_title">Mocha</string>
+    <string name="mocha_desc">Mocha adalah perpaduan espresso, susu, dan cokelat yang creamy.</string>
+    <string name="coffee_title">coffee_title</string>
+    <string name="coffee_detail">coffee_detail</string>
+    <string name="back">Back</string>
+    <string name="Back">back\n</string>
+</resources>
