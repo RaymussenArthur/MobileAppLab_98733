@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.week9_98733.ui.theme.OnBackgroundItemText
 import com.example.week9_98733.ui.theme.OnBackgroundTitleText
 import com.example.week9_98733.ui.theme.PrimaryTextButton
@@ -43,7 +50,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Home()
+                    val navController = rememberNavController()
+                    App(navController = navController)
                 }
             }
         }
@@ -51,7 +59,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Home() {
+fun App(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "home"
+    ) {
+        composable("home") {
+            Home { listData ->
+                navController.navigate("resultContent/?listData=$listData")
+            }
+        }
+        composable(
+            "resultContent/?listData={listData}",
+            arguments = listOf(navArgument("listData") {
+                type = NavType.StringType
+            })
+        ) {
+            ResultContent(it.arguments?.getString("listData").orEmpty())
+        }
+    }
+}
+
+@Composable
+fun Home(
+    navigateFromHomeToResult: (String) -> Unit
+) {
     val listData = remember {
         mutableStateListOf(
             Student("Tanu"),
@@ -69,7 +101,8 @@ fun Home() {
                 listData.add(inputField.value)
                 inputField.value = Student("")
             }
-        }
+        },
+        navigateFromHomeToResult = { navigateFromHomeToResult(listData.toList().toString()) }
     )
 }
 
@@ -78,7 +111,8 @@ fun HomeContent(
     listData: SnapshotStateList<Student>,
     inputField: Student,
     onInputValueChange: (String) -> Unit,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    navigateFromHomeToResult: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -87,7 +121,9 @@ fun HomeContent(
     ) {
         item {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OnBackgroundTitleText(
@@ -95,30 +131,60 @@ fun HomeContent(
                         id = R.string.enter_item
                     )
                 )
+
                 TextField(
                     value = inputField.name,
-                    onValueChange = onInputValueChange,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text
-                    )
+                    ),
+                    onValueChange = {
+                        onInputValueChange(it)
+                    }
                 )
-                PrimaryTextButton(
-                    text = stringResource(id = R.string.button_click),
-                    onClick = onButtonClick
-                )
+
+                Row {
+                    PrimaryTextButton(
+                        text = stringResource(id = R.string.button_click)
+                    ) {
+                        onButtonClick()
+                    }
+                    PrimaryTextButton(
+                        text = stringResource(id = R.string.button_navigate)
+                    ) {
+                        navigateFromHomeToResult()
+                    }
+                }
             }
         }
         items(listData) { item ->
-            OnBackgroundItemText(text = item.name)
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OnBackgroundItemText(text = item.name)
+            }
         }
     }
 }
 
+@Composable
+fun ResultContent(listData: String) {
+    Column(
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OnBackgroundItemText(text = listData)
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHome() {
     Week9_98733Theme {
-        Home()
+        Home {}
     }
 }
