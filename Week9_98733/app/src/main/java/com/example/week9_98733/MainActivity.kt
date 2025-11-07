@@ -3,11 +3,12 @@ package com.example.week9_98733
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -55,51 +56,44 @@ fun Home(
     //Here, we define a parameter called items
     items: List<String>,
 ) {
-    //Here, we use LazyColumn to lazily display a list of items.
-    //LazyColumn is more efficient than Column
-    //because it only composes and lays out the currently visible items
-    //much like a RecyclerView
-    //You can also use LazyRow to lazily display a list of items horizontally.
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        //Here, we use item to display an item inside the LazyColumn
-        item {
-            Column(
-                //Modifier.padding(16.dp) is used to add padding to the Column
-                //You can also use Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                //to add padding horizontally and vertically
-                //or Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp)
-                //to add padding to each side
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = stringResource(id = R.string.enter_item))
-                //Here, we use TextField to display a text input field
-                TextField(
-                    //Set the value of the input field
-                    value = "",
-                    //Set what happens when the value of the input field changes
-                    onValueChange = {
-                    },
-                    //Set the keyboard type of the input field
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    )
-                )
-                //Here, we use Button to display a button
-                //the onClick parameter is used to set what happens when the button is clicked
-                Button(onClick = { }) {
-                    //Set the text of the button
-                    Text(text = stringResource(id = R.string.button_click))
-                }
-            }
+    //Here, we use Column to display items vertically and center them.
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = stringResource(id = R.string.enter_item))
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //Here, we use TextField to display a text input field
+        TextField(
+            //Set the value of the input field
+            value = "",
+            //Set what happens when the value of the input field changes
+            onValueChange = {
+            },
+            //Set the keyboard type of the input field
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Here, we use Button to display a button
+        //the onClick parameter is used to set what happens when the button is clicked
+        Button(onClick = { }) {
+            //Set the text of the button
+            Text(text = stringResource(id = R.string.button_click))
         }
-        items(items) { item ->
-            Column(
-                modifier = Modifier.padding(vertical = 4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = item)
-            }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        items.forEach { item ->
+            Text(text = item, modifier = Modifier.padding(vertical = 4.dp))
         }
     }
 }
