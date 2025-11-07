@@ -36,7 +36,14 @@ import com.example.week9_98733.ui.theme.OnBackgroundItemText
 import com.example.week9_98733.ui.theme.OnBackgroundTitleText
 import com.example.week9_98733.ui.theme.PrimaryTextButton
 import com.example.week9_98733.ui.theme.Week9_98733Theme
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
+@JsonClass(generateAdapter = true)
 data class Student(
     var name: String
 )
@@ -92,17 +99,28 @@ fun Home(
         )
     }
     val inputField = remember { mutableStateOf(Student("")) }
+    val isButtonEnabled = inputField.value.name.isNotBlank()
+
+    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    val listType = Types.newParameterizedType(List::class.java, Student::class.java)
+    val adapter = moshi.adapter<List<Student>>(listType)
+
     HomeContent(
         listData = listData,
         inputField = inputField.value,
         onInputValueChange = { input -> inputField.value = inputField.value.copy(name = input) },
         onButtonClick = {
-            if (inputField.value.name.isNotBlank()) {
+            if (isButtonEnabled) {
                 listData.add(inputField.value)
                 inputField.value = Student("")
             }
         },
-        navigateFromHomeToResult = { navigateFromHomeToResult(listData.toList().toString()) }
+        isButtonEnabled = isButtonEnabled,
+        navigateFromHomeToResult = {
+            val json = adapter.toJson(listData.toList())
+            val encodedJson = URLEncoder.encode(json, StandardCharsets.UTF_8.name())
+            navigateFromHomeToResult(encodedJson)
+        }
     )
 }
 
@@ -112,6 +130,7 @@ fun HomeContent(
     inputField: Student,
     onInputValueChange: (String) -> Unit,
     onButtonClick: () -> Unit,
+    isButtonEnabled: Boolean,
     navigateFromHomeToResult: () -> Unit
 ) {
     LazyColumn(
@@ -144,7 +163,8 @@ fun HomeContent(
 
                 Row {
                     PrimaryTextButton(
-                        text = stringResource(id = R.string.button_click)
+                        text = stringResource(id = R.string.button_click),
+                        enabled = isButtonEnabled
                     ) {
                         onButtonClick()
                     }
@@ -171,13 +191,20 @@ fun HomeContent(
 
 @Composable
 fun ResultContent(listData: String) {
-    Column(
+    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    val listType = Types.newParameterizedType(List::class.java, Student::class.java)
+    val adapter = moshi.adapter<List<Student>>(listType)
+    val studentList = if (listData.isNotBlank()) adapter.fromJson(listData) else emptyList()
+
+    LazyColumn(
         modifier = Modifier
             .padding(vertical = 4.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OnBackgroundItemText(text = listData)
+        items(studentList.orEmpty()) { student ->
+            OnBackgroundItemText(text = student.name)
+        }
     }
 }
 

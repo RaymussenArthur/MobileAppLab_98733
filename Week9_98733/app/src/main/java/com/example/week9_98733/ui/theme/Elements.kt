@@ -34,17 +34,20 @@ fun ItemText(text: String, color: Color) {
 }
 
 @Composable
-fun PrimaryTextButton(text: String, onClick: () -> Unit) {
-    TextButton(text = text,
+fun PrimaryTextButton(text: String, enabled: Boolean = true, onClick: () -> Unit) {
+    TextButton(
+        text = text,
         textColor = Color.White,
+        enabled = enabled,
         onClick = onClick
     )
 }
 
 @Composable
-fun TextButton(text: String, textColor: Color, onClick: () -> Unit) {
+fun TextButton(text: String, textColor: Color, enabled: Boolean = true, onClick: () -> Unit) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.padding(8.dp),
         colors = ButtonDefaults
             .buttonColors(
