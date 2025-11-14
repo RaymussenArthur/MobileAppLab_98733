@@ -1,27 +1,22 @@
 package com.example.week10_98733
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.week10_98733.viewmodels.TotalViewModel
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel by lazy {
-        ViewModelProvider(this)[TotalViewModel::class.java]
-    }
+    private lateinit var viewModel: TotalViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        prepareViewModel()
-    }
+        viewModel = ViewModelProvider(this)[TotalViewModel::class.java]
 
-    private fun updateText(total: Int) {
-        findViewById<TextView>(R.id.text_total).text =
-            getString(R.string.text_total, total)
+        prepareViewModel()
     }
 
     private fun prepareViewModel(){
@@ -32,5 +27,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_increment).setOnClickListener {
             viewModel.incrementTotal()
         }
+    }
+
+    private fun updateText(total: Int) {
+        findViewById<TextView>(R.id.text_total).text = getString(R.string.text_total, total)
     }
 }
