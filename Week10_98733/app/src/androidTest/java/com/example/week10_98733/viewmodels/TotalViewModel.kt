@@ -12,6 +12,10 @@ class TotalViewModel: ViewModel() {
 //from a background thread or the main thread
 //While on the other hand setValue() is used
 //only if you're on the main thread
+    fun setTotal(newTotal: Int) {
+        _total.postValue(newTotal)
+    }
+
     _total.postValue(0)
     //Increment the total value
     fun incrementTotal() {
