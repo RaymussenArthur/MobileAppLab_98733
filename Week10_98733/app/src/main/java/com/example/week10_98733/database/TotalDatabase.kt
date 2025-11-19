@@ -3,7 +3,7 @@ package com.example.week10_98733.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [Total::class], version = 1)
+@Database(entities = [Total::class], version = 2)
 abstract class TotalDatabase : RoomDatabase() {
     // Declare the Dao
     abstract fun totalDao(): TotalDao
