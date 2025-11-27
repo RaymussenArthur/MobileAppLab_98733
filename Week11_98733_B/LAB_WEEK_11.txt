@@ -1,0 +1,46 @@
+1. Ketika user mengambil gambar, bagian kode yang menyimpan file berdasarkan URI terdapat pada fungsi insertToStore() di dalam ProviderFileManager.kt. Berikut potongan kode yang melakukan penyimpanan file ke MediaStore:
+
+private fun insertToStore(fileInfo: FileInfo, contentUri: Uri, contentValues: ContentValues) {
+    executor.execute {
+        val insertedUri = contentResolver.insert(contentUri, contentValues)
+        insertedUri?.let {
+            val inputStream = contentResolver.openInputStream(fileInfo.uri)
+            val outputStream = contentResolver.openOutputStream(insertedUri)
+            IOUtils.copy(inputStream, outputStream)
+        }
+    }
+}
+
+Kode ini melakukan:
+- Insert metadata file ke MediaStore
+- Copy file dari URI FileProvider ke lokasi MediaStore aktual
+
+
+2. Pada FileInfo.kt terdapat 5 atribut:
+
+a. Attribute pertama: uri
+   Berisi URI yang diberikan oleh FileProvider untuk mengakses file sementara (misalnya foto/video yang baru diambil). URI ini bersifat aman dan hanya memberikan akses sementara ke aplikasi kamera.
+
+b. Attribute keempat: relativePath
+   Menentukan folder tujuan di MediaStore tempat file akan disimpan, misalnya:
+   - Environment.DIRECTORY_PICTURES
+   - Environment.DIRECTORY_MOVIES
+
+
+3. [Bonus] Alur lengkap ketika user mengambil gambar hingga tersimpan di MediaStore:
+
+   1) User menekan tombol “Photo”.
+   2) Aplikasi menjalankan checkStoragePermission().
+   3) Jika izin sudah ada (atau Android >= Q), aplikasi memanggil openImageCapture().
+   4) openImageCapture() membuat FileInfo melalui generatePhotoUri().
+      - Membuat file kosong
+      - Membuat URI FileProvider
+   5) takePictureLauncher.launch(uri) membuka kamera dengan URI tujuan.
+   6) Kamera menyimpan hasil foto ke lokasi URI FileProvider.
+   7) Callback ActivityResult (TakePicture):
+         providerFileManager.insertImageToStore(photoInfo)
+   8) insertImageToStore() memanggil insertToStore():
+         - Insert metadata file ke MediaStore
+         - Copy isi file dari URI FileProvider ke MediaStore menggunakan IOUtils.copy()
+   9) File kini resmi tersimpan di MediaStore → dapat muncul di Gallery.
+
