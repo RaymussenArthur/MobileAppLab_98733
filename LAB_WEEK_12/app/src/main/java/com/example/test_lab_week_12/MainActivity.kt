@@ -46,12 +46,33 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        movieViewModel.error.observe(this) { error ->
-            if (error.isNotEmpty()) {
-                Snackbar.make(recyclerView, error, Snackbar.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            // repeatOnLifecycle is a lifecycle-aware coroutine builder
+            // Lifecycle.State.STARTED means that the coroutine will run
+            // when the activity is started
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    // collect the list of movies from the StateFlow
+                    movieViewModel.popularMovies.collect {
+                        // add the list of movies to the adapter
+                            movies ->
+                        movieAdapter.addMovies(movies)
+                    }
+                }
+                launch {
+                    // collect the error message from the StateFlow
+                    movieViewModel.error.collect { error ->
+                        // if an error occurs, show a Snackbar with the error
+                        message
+                        if (error.isNotEmpty()) Snackbar
+                            .make(
+                                recyclerView, error, Snackbar.LENGTH_LONG
+                            ).show()
+                    }
+                }
             }
         }
-    }
+        }
 
     private fun openMovieDetails(movie: Movie) {
         val intent = Intent(this, DetailsActivity::class.java).apply {
