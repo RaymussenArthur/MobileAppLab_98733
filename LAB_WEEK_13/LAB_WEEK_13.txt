@@ -1,0 +1,19 @@
+Answer these questions based on the tutorial: 
+1. Why is MVVM important? Which files represent Model, which files represent 
+View, and which files represent ViewModel? 
+2. In Part 1, you implemented Data Binding, why is this more efficient than using 
+the normal method? 
+3. In Part 2, you implemented the Singleton Pattern, why is this important? 
+4. In Part 2 & 3, you implemented the Repository Pattern, why is this important? 
+5. In part 3, you implemented the Worker Manager, is there another way to refresh 
+your database with the latest data other than using Worker?
+
+1. MVVM (Model-View-ViewModel) is important because it separates the user interface logic from the business logic and data handling, making the code easier to test, maintain, and scale while preventing memory leaks. In this project, the Model is represented by Movie.kt and MovieRepository.kt (handling data), the View is represented by MainActivity.kt and activity_main.xml (displaying UI), and the ViewModel is represented by MovieViewModel.kt (acting as the bridge between UI and data).
+
+2. Data Binding is more efficient than the normal method (using findViewById) because it generates binding classes at compile time that reference views directly, eliminating the runtime overhead of traversing the view hierarchy to find widgets. It also allows data to update the UI automatically without writing repetitive boilerplate code in the Activity.
+
+3.The Singleton Pattern, implemented here in MovieApplication (or the database instance), is important because it ensures that expensive resources like the Retrofit client or the Room database are created only once and shared across the entire application. This saves system memory and prevents issues related to having multiple conflicting connections to the same data source.
+
+4.The Repository Pattern is important because it provides a single source of truth for data access, abstracting away the details of whether data is coming from a local database or a remote API. This decouples the ViewModel from the data sources, allowing you to swap or modify the data logic without affecting the rest of the app.
+
+5. Yes, aside from WorkManager, you could refresh the database using standard Coroutines launched within the ViewModel or LifecycleScope to fetch data when the app starts or resumes. Alternatively, you could use an AlarmManager for scheduled tasks (though less efficient for battery than WorkManager) or simply trigger a network call manually via a "Pull to Refresh" gesture in the UI.
