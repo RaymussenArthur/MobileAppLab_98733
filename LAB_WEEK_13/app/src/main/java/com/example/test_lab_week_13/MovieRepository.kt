@@ -1,5 +1,6 @@
 package com.example.test_lab_week_13
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.test_lab_week_13.api.MovieService
@@ -46,5 +47,22 @@ class MovieRepository(
                 emit(savedMovies)
             }
         }.flowOn(Dispatchers.IO)
+    }
+
+    // fetch movies from the API and save them to the database
+    // this function is used at an interval to refresh the list of popular
+    // movies
+    suspend fun fetchMoviesFromNetwork() {
+        val movieDao: MovieDao = movieDatabase.movieDao()
+        try {
+            val popularMovies = movieService.getPopularMovies(apiKey)
+            val moviesFetched = popularMovies.results
+            movieDao.addMovies(moviesFetched)
+        } catch (exception: Exception) {
+            Log.d(
+                "MovieRepository",
+                "An error occurred: ${exception.message}"
+            )
+        }
     }
 }
